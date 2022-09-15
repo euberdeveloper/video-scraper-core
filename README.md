@@ -20,13 +20,26 @@ $ npm install video-scraper-core
 
 This module is written because videos hosted on some websites are difficult to download and watchable only in the browser. Even by using some browser tools, sometimes, it may be difficult or impossible to download the video. A solution that can always be used, is actually taking a video screen recording after having played the video, but it is too time-consuming to be done manually.
 
-This is why I have written this module, that uses [**puppeteer**](https://www.npmjs.com/package/puppeteer) under the hood to open a google-chrome browser, see the video and take a video recording of it.
+This is why I have written this module, that uses **[puppeteer](https://www.npmjs.com/package/puppeteer)** and **[puppeteer-stream](https://www.npmjs.com/package/puppeteer-stream)** under the hood to open a google-chrome browser, see the video and take a video recording of it.
 
 The module is written in **Typescript**, uses **Webpack** to reduce the bundle size (even if most of it comes from the puppeter browser), uses **[euberlog](https://www.npmjs.com/package/euberlog)** for a scoped debug log and is **full of configurations**.
 
 ## How does it work
 
 The module provides an abstract class that you can extend to create your own scraper. By overriding some simple methods, you can adapt the scraper to your needs.
+
+The scraper:
+* launches a browser window
+* loads the url page
+* calls the hook `afterPageLoaded`, for example if a login is needed
+* if not already specified by the options, parses the video duration
+* if fullscreen is specified by the options, clicks the fullscreen button
+* clicks the play button
+* waits an optional delay specified by the options
+* starts the browser window recording
+* waits until the video is finished / the specified duration is reached
+* waits an optional delay specified by the options
+* closes the browser window and the video is saved
 ## Project usage
 
 An example to create a scraper for TumConf:
@@ -121,6 +134,13 @@ The VideoScraperCore class, that can be extended to scrape a video from a websit
 * __setVideoToFullScreen(page: Page, logger: Logger): Promise<void>__: Sets the video put the video in fullscreen.
 * __playVideo(page: Page, logger: Logger): Promise<void>__: Plays the video by clicking the play button.
 
+**Protected and abstract methods:**
+
+* __afterPageLoaded(options: ScrapingOptions, page: Page, logger: Logger): Promise<void>__: This method is called after the page, with the specified url, is loaded. It can be used for things such as logging in if it is requested before reaching the video page.
+* __getVideoDurationSelector(): string__: Returns the video duration selector, which is used by the method [[getVideoDuration]] to extract the video duration text from the page.
+* __getFullScreenSelector(): string__: Returns the video full screen selector, which is used by the method [[setVideoToFullScreen]] to put the video in full screen.
+* __getPlayButtonSelector(): string__: Returns the video play button selector, which is used by the method [[playVideo]] to play the video.
+  
 ### BrowserOptions
 
 The options given to the VideoScraperCore constructor.
