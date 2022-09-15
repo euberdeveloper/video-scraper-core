@@ -2,3 +2,4 @@
 typedoc.js
 typedoc.dev.js
 webpack.config.js
+jest.config.ts
