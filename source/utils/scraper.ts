@@ -14,7 +14,7 @@ import {
 import { handleBrowserOptions, handleScrapingOptions } from './options';
 
 /**
- * The [[VideoScraperCore]] class, that scrapes a video from a "TumConf WebKonferenze" and saves it to a file.
+ * The [[VideoScraperCore]] class, that can be extended to scrape a video from a website and saves it to a file.
  */
 export abstract class VideoScraperCore {
     private logger: Logger;
@@ -164,7 +164,7 @@ export abstract class VideoScraperCore {
             await page.goto(url, { waitUntil: 'networkidle0' });
 
             logger.debug('Executing the afterPageLoaded hook');
-            await this.afterPageLoaded(scrapingOptions);
+            await this.afterPageLoaded(scrapingOptions, page, logger);
 
             if (scrapingOptions.duration === null) {
                 scrapingOptions.duration = await this.getVideoDuration(page, logger);
@@ -211,8 +211,10 @@ export abstract class VideoScraperCore {
      * This method is called after the page, with the specified url, is loaded.
      * It can be used for things such as logging in if it is requested before reaching the video page.
      * @param options The [[ScrapingOptions]] that can be used or changed in this method
+     * @param page The page (puppeteer) that is loaded
+     * @param logger A logger instance to write log
      */
-    protected abstract afterPageLoaded(options: ScrapingOptions): Promise<void>;
+    protected abstract afterPageLoaded(options: ScrapingOptions, page: Page, logger: Logger): Promise<void>;
     /**
      * Returns the video duration selector, which is used by the method [[getVideoDuration]] to extract the video duration text from the page.
      */
