@@ -12,10 +12,7 @@ export class VideoScraperCoreError extends Error {
      * @param context The context of the error
      */
     constructor(message = 'There was a generic error with VideoScraperCore', context: any = null) {
-        // This includes a trick in order to make the instanceof properly work
-        const trueProto = new.target.prototype;
         super(message);
-        this.__proto__ = trueProto;
 
         this.name = 'VideoScraperCoreError';
         this.context = context;
