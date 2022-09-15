@@ -142,7 +142,7 @@ export abstract class VideoScraperCore {
     }
 
     /**
-     * Scrapes a video from a TumConf conference.
+     * Scrapes a video.
      * @param url The url of the video to save
      * @param destPath The path where the video will be saved. Note that the extension should be webm.
      * @param options The [[ScrapingOptions]] to pass to this method.
