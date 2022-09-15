@@ -164,7 +164,7 @@ export abstract class VideoScraperCore {
             await page.goto(url, { waitUntil: 'networkidle0' });
 
             logger.debug('Executing the afterPageLoaded hook');
-            await this.afterPageLoaded();
+            await this.afterPageLoaded(scrapingOptions);
 
             if (scrapingOptions.duration === null) {
                 scrapingOptions.duration = await this.getVideoDuration(page, logger);
@@ -210,8 +210,9 @@ export abstract class VideoScraperCore {
     /**
      * This method is called after the page, with the specified url, is loaded.
      * It can be used for things such as logging in if it is requested before reaching the video page.
+     * @param options The [[ScrapingOptions]] that can be used or changed in this method
      */
-    protected abstract afterPageLoaded(): Promise<void>;
+    protected abstract afterPageLoaded(options: ScrapingOptions): Promise<void>;
     /**
      * Returns the video duration selector, which is used by the method [[getVideoDuration]] to extract the video duration text from the page.
      */
